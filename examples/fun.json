@@ -1,0 +1,10 @@
+[["do", []
+["set", "printHello", ["do", [], ["print", "hello"]]],
+[["printHello"]],
+[["printHello"]],
+[["printHello"]],
+
+["set", "sum", ["do", ["x", "y"], ["+", ["x"], ["y"]]]],
+["print", [["sum"], 1, 2]]
+]]
+

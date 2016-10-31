@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>miniscript</title>
+</head>
+<body>
+
+  <textarea id="src" rows="20" cols="60">
+["for", ["range", 1, 100], ["do", ["n"],
+  ["print", ["switch",
+    ["=", ["%", ["n"], 15], 0], "FizzBuzz",
+    ["=", ["%", ["n"], 3], 0],  "Fizz",
+    ["=", ["%", ["n"], 5], 0],  "Buzz",
+    ["n"]
+  ]]
+]]
+  </textarea><br>
+  <button id="run-btn">Run</button><br>
+  <textarea id="output" rows="20" cols="60"></textarea>
+
+  <script src="./main.js"></script>
+</body>
+</html>
+
