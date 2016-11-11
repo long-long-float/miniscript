@@ -41,13 +41,8 @@ document.getElementById('run-btn').onclick = () => {
           },
           switch: (a) => {
             for (let i = 0; i < a.length; i += 2) {
-              if (a.length % 2 !== 0 && i === a.length - 1) { // else
-                return evalExpr(a[i])
-              }
-
-              if (evalExpr(a[i])) { // then
-                return evalExpr(a[i + 1])
-              }
+              if (a.length % 2 !== 0 && i === a.length - 1) return evalExpr(a[i]) // else
+              if (evalExpr(a[i])) return evalExpr(a[i + 1]) // then
             }
             return null // should not reach
           },
