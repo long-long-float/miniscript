@@ -21,57 +21,35 @@ document.getElementById('run-btn').onclick = () => {
         const f = {
           set: (a) => env[0][a[0]] = a[1],
           print: (a) => (output.value += a[0] + "\n") && a[0],
-          "+": (a) => a.reduce((x, y) => x + y),
-          "-": (a) => a.reduce((x, y) => x - y),
-          "*": (a) => a.reduce((x, y) => x * y),
-          "/": (a) => a.reduce((x, y) => x / y),
+          "+": (a) => a.reduce((x, y) => x + y), "-": (a) => a.reduce((x, y) => x - y),
+          "*": (a) => a.reduce((x, y) => x * y), "/": (a) => a.reduce((x, y) => x / y),
           "%": (a) => a[0] % a[1],
           "=": (a) => a[0] === a[1],
-          ">": (a) => a[0] > a[1],
-          "<": (a) => a[0] < a[1],
-          ">=": (a) => a[0] >= a[1],
-          "<=": (a) => a[0] <= a[1],
-          range: (a) => {
-            const r = []
-            for (let i = a[0]; i <= a[1]; i++) r.push(i)
-            return r
-          }
+          ">": (a) => a[0] > a[1],    "<": (a) => a[0] < a[1],
+          ">=": (a) => a[0] >= a[1], "<=": (a) => a[0] <= a[1],
+          range: (a) => Array.from(Array(a[1] - a[0] + 1).keys(), (i) => a[0] + i),
+          array: (a) => a,
         }[fst]
         const s = {
-          array: (a) => a,
           if: (a) => evalExpr(a[0]) ? evalExpr(a[1]) : evalExpr(a[2]),
           for: (a) => {
             const coll = evalExpr(a[0])
             const cb = evalExpr(a[1])
-            const r = []
-            if (Array.isArray(coll)) {
-              for (let i = 0; i < coll.length; i++) {
-                r.push(applyLambda(cb, [coll[i]]))
-              }
-            } else {
-              const keys = Object.keys(coll)
-              for (let i = 0; i < keys.length; i++) {
-                r.push(applyLambda(cb, [keys[i], coll[keys[i]]]))
-              }
-            }
-            return r
+            return Array.isArray(coll) ?
+                coll.map((elem) => applyLambda(cb, [elem]))
+              : Object.keys(coll).map((key) => applyLambda(cb, [key, coll[key]]))
           },
           switch: (a) => {
-            let r = null
-            for (let i = 0; i < a.length; ) {
-              if (a.length % 2 !== 0 && i === a.length - 1) {
-                r = evalExpr(a[i])
-                break
+            for (let i = 0; i < a.length; i += 2) {
+              if (a.length % 2 !== 0 && i === a.length - 1) { // else
+                return evalExpr(a[i])
               }
 
-              if (evalExpr(a[i])) {
-                r = evalExpr(a[i + 1])
-                break
+              if (evalExpr(a[i])) { // then
+                return evalExpr(a[i + 1])
               }
-
-              i += 2
             }
-            return r
+            return null // should not reach
           },
         }[fst]
 
