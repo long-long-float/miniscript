@@ -48,6 +48,15 @@ It uses JSON. It has only two form.
 
 A variable is implemented as function. For example, variable "n"'s value can be obtained by `["n"]`.
 
+Element of array or object can be accessed by below.
+
+* array
+    * get [_varname_ _index_]
+    * set [_varname_ _index_, _value_]
+* object
+    * get [_varname_, _key_]
+    * set [_varname_ _key_, _value_]
+
 ### lambda
 
 A lambda (`["do", _args_, _exprs_...]`) can be applied.

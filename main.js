@@ -16,7 +16,7 @@ document.getElementById('run-btn').onclick = () => {
     if (Array.isArray(expr) && expr[0] !== 'do') { // function call
       const fst = evalExpr(expr[0])
       if (fst[0] == 'do') {
-        return applyLambda(lambda, args.slice(1))
+        return applyLambda(fst, expr.slice(1))
       } else {
         const f = {
           set: (a) => env[0][a[0]] = a[1],
@@ -80,7 +80,12 @@ document.getElementById('run-btn').onclick = () => {
         } else if(s) {
           return s(expr.slice(1))
         } else if(env[0].hasOwnProperty(fst)) {
-          return env[0][fst]
+          const v = env[0][fst]
+          const args = expr.slice(1).map(evalExpr)
+          if (v instanceof Object) { // Array or Object
+            if (args.length == 2) v[args[0]] = args[1]
+            return v[args[0]]
+          } else { return v }
         } else {
           throw `unknown identifier '${fst}'`
         }
