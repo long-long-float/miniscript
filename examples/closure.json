@@ -1,0 +1,23 @@
+[["do", [],
+["set", "makeCounter", ["do", [],
+  ["set", "n", 0],
+  ["do", [],
+    ["set", "n", ["+", ["n"], 1]],
+    ["n"]
+  ]
+]],
+
+["set", "counter", [["makeCounter"]]],
+["print", [["counter"]]],
+["print", [["counter"]]],
+
+["set", "counter2", [["makeCounter"]]],
+["print", [["counter2"]]],
+["print", [["counter2"]]],
+
+["console", ["counter"]],
+["console", ["counter2"]],
+["print", [["counter"]]],
+["print", [["counter2"]]]
+]]
+

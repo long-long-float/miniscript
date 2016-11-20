@@ -18,7 +18,7 @@ It uses JSON. It has only two form.
 
 * [_funname_, _args_...]
     * apply function or special form
-* lambda (["do", _args_, _exprs_...]) and other (such as `1`, `"text"`, `3.14`, `{ "a": 1 }`)
+* lambda (["do", _args_, _exprs_...]) (it is closure) and other (such as `1`, `"text"`, `3.14`, `{ "a": 1 }`)
     * value
 
 ## apply function
@@ -59,7 +59,7 @@ Element of array or object can be accessed by below.
 
 ### lambda
 
-A lambda (`["do", _args_, _exprs_...]`) can be applied.
+A lambda can be applied.
 
 ## literal
 

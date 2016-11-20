@@ -1,11 +1,28 @@
 const output = document.getElementById('output')
 document.getElementById('run-btn').onclick = () => {
   output.value = ''
-  const env = [{}]
+  class Environment {
+    constructor(p) {
+      this.parent = p
+      this.local = {}
+    }
+    find(name) {
+      let r
+      if (this.local.hasOwnProperty(name)) return this
+      else if (this.parent && (r = this.parent.find(name))) return r
+      else return undefined
+    }
+    clone() {
+      const e = new Environment(this.parent && this.parent.clone())
+      e.local = Object.assign({}, this.local) // corner-cutting
+      return e
+    }
+  }
+  const env = [new Environment(null)]
 
   function applyLambda(lambda, args) {
-    env.unshift({})
-    lambda[1].forEach((n, i) => env[0][n] = args[i])
+    env.unshift(new Environment(lambda.lparent))
+    lambda[1].forEach((n, i) => env[0].local[n] = args[i])
     const r = lambda.slice(2).map(evalExpr)[lambda.length - 3]
     env.shift()
     return r
@@ -18,7 +35,10 @@ document.getElementById('run-btn').onclick = () => {
         return applyLambda(fst, expr.slice(1))
       } else {
         const f = {
-          set: (a) => env[0][a[0]] = a[1],
+          set: (a) => {
+            const e = env[0].find(a[0]) || env[0]
+            return e.local[a[0]] = a[1]
+          },
           print: (a) => (output.value += a[0] + "\n") && a[0],
           "+": (a) => a.reduce((x, y) => x + y), "-": (a) => a.reduce((x, y) => x - y),
           "*": (a) => a.reduce((x, y) => x * y), "/": (a) => a.reduce((x, y) => x / y),
@@ -47,14 +67,15 @@ document.getElementById('run-btn').onclick = () => {
           },
         }[fst]
 
+        let e
         if (f) {
           return f(expr.slice(1).map(evalExpr))
         } else if(s) {
           return s(expr.slice(1))
-        } else if(env[0].hasOwnProperty(fst)) {
-          const v = env[0][fst]
-          const args = expr.slice(1).map(evalExpr)
-          if (v instanceof Object) { // Array or Object
+        } else if(e = env[0].find(fst)) {
+          const v = e.local[fst]
+          if (v instanceof Object && v[0] !== 'do') { // Array or Object
+            const args = expr.slice(1).map(evalExpr)
             if (args.length == 2) v[args[0]] = args[1]
             return v[args[0]]
           } else { return v }
@@ -62,6 +83,10 @@ document.getElementById('run-btn').onclick = () => {
           throw `unknown identifier '${fst}'`
         }
       }
+    } else if (expr[0] === 'do') {
+      const expr2 = Object.assign([], expr)
+      expr2.lparent = env[0].clone()
+      return expr2
     } else { return expr } // literal
   }
   try { evalExpr(JSON.parse(document.getElementById('src').value)) } catch (e) { output.value += e.toString() + "\n" }
