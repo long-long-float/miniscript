@@ -1,7 +1,6 @@
 const output = document.getElementById('output')
 document.getElementById('run-btn').onclick = () => {
   output.value = ''
-  const src = JSON.parse(document.getElementById('src').value)
   const env = [{}]
 
   function applyLambda(lambda, args) {
@@ -65,5 +64,5 @@ document.getElementById('run-btn').onclick = () => {
       }
     } else { return expr } // literal
   }
-  evalExpr(src)
+  try { evalExpr(JSON.parse(document.getElementById('src').value)) } catch (e) { output.value += e.toString() + "\n" }
 }
